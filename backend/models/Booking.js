@@ -1,0 +1,29 @@
+const mongoose = require("mongoose")
+const bookingSchema = new mongoose.Schema({
+  bus:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Bus",
+    required:true
+  },
+  passengerName:{
+    type:String,
+    required:true,
+    trim:true
+  },
+  totalFare:{
+    type:Number,
+    required:true,
+    min:0
+  },
+  seatsBooked:{
+    type:Number,
+    required:true,
+    min:1
+  },
+  status:{
+    type:String,
+    enum:["confirmed","cancelled"],
+    default:"confirmed"
+  }
+},{timestamps:true})
+module.exports=mongoose.model("Booking",bookingSchema)

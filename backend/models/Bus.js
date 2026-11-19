@@ -1,0 +1,49 @@
+const mongoose= require("mongoose");
+const busSchema= new mongoose.Schema({
+  busName:{
+    type:String,
+    required:true,
+    trim:true
+  },
+  busNumber:{
+    type:String,
+    required:true,
+    trim:true,
+    unique:true
+  },
+  source:{
+    type:String,
+    required:true,
+    trim:true
+  },
+  destination:{
+    type:String,
+    required:true,
+    trim:true
+  },
+  departureDateTime:{
+    type:Date,
+    required:true
+  },
+  arrivalDateTime:{
+    type:Date,
+    required:true
+  },
+  fare:{
+    type:Number,
+    required:true,
+    min:0
+  },
+  totalSeats:{
+    type:Number,
+    required:true,
+    min:1
+  },
+  availableSeats:{
+    type:Number,
+    required:true,
+    min:0
+  },
+
+},{timestamps:true});
+module.exports=mongoose.model("Bus",busSchema);
