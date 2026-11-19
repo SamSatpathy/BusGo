@@ -1,11 +1,12 @@
-import {useState, useContext} from "react";
-import {useNavigate, Link} from "react-router-dom";
+import { useState, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import api from "../api/axios";
 import "./Register.css";
 
-function Login(){
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -21,22 +22,18 @@ function Login(){
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      // AXIOS - no localhost, no fetch
+      const { data } = await api.post("/login", { email, password });
 
-      if (!res.ok) {
-        setError("Invalid email or password");
-        return;
-      }
+      // SAVE TOKEN - THIS WAS MISSING
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-      const data = await res.json();
       dispatch({ type: "LOGIN", payload: data.user });
       navigate("/");
     } catch (err) {
-      setError("Server not running");
+      // axios error
+      setError(err.response?.data?.message || "Invalid email or password");
     }
   };
 

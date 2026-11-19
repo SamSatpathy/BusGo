@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
+import api from "../api/axios";
 import "./Booking.css";
 
 function Booking() {
@@ -7,8 +8,6 @@ function Booking() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Fare comes from Search page, not from fetch - so it will never be 0 / NaN
-  // In BusCard, we will send fare like: navigate(`/booking/${bus._id}`, { state: { fare: bus.fare, busName: bus.busName } })
   const fareFromSearch = location.state?.fare || 0;
   const busNameFromSearch = location.state?.busName || "Bus Booking";
 
@@ -24,24 +23,21 @@ function Booking() {
     }
     setLoading(true);
 
-    const res = await fetch("http://localhost:5000/api/bookings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      // AXIOS - no localhost, no JSON.stringify, no headers needed
+      const { data } = await api.post("/bookings", {
         bus: busId,
         passengerName: passengerName.trim(),
         seatsBooked: seatsBooked,
-      }),
-    });
+      });
 
-    const data = await res.json();
-    setLoading(false);
-
-    if (res.ok) {
-      // Go to MyBookings so user can SEE it, not just alert
-      navigate("/my-bookings");
-    } else {
-      alert(data.message || "Booking failed");
+      // Success - go to MyBookings
+      navigate("/mybookings");
+    } catch (err) {
+      // axios error comes in err.response.data
+      alert(err.response?.data?.message || "Booking failed");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -71,7 +67,6 @@ function Booking() {
           <option value={4}>4 Seats</option>
         </select>
 
-        {/* Total will now show correctly because fare comes from Search page */}
         <p className="total">Total: ₹{fareFromSearch * seatsBooked}</p>
 
         <button type="submit" disabled={loading}>
