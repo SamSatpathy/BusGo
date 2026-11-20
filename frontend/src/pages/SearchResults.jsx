@@ -14,7 +14,7 @@ function SearchResults() {
   useEffect(() => {
     const fetchBuses = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/buses");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/buses`);
         const data = await res.json();
         // Backend returns { buses: [...] }
         const allBuses = data.buses || data;

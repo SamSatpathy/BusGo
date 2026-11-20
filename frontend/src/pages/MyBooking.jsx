@@ -7,7 +7,7 @@ function MyBooking() {
 
   const fetchBookings = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/bookings");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/buses`)
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to fetch bookings");
       setBookings(Array.isArray(data) ? data : data.bookings || []);
@@ -25,7 +25,7 @@ function MyBooking() {
   const handleCancel = async (id) => {
     if (!window.confirm("Cancel this booking?")) return;
     
-    const res = await fetch(`http://localhost:5000/api/bookings/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/bookings/${id}`, {
       method: "DELETE"
     });
     const data = await res.json();

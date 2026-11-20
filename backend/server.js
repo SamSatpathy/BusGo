@@ -31,3 +31,8 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`server is running http://localhost:${port}`);
 });
+
+app.use(cors({
+  origin: "process.env.FRONTEND_URL", // <- your Vercel link here
+  credentials: true
+}))
